@@ -16,6 +16,6 @@ RUN mkdir /opt/bingo && \
     mkdir /opt/bongo/logs/577d315fe5 && \
     touch /opt/bongo/logs/577d315fe5/main.log
 
-EXPOSE 12237
+EXPOSE 12337
 
 CMD ["bingo", "run_server"]

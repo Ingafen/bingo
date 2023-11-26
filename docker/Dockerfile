@@ -1,14 +1,13 @@
 FROM ubuntu:latest as build 
 WORKDIR /build-app
 
-RUN apt-get update && apt-get install curl -y 
+RUN apt-get update && apt-get install curl wget -y 
 RUN curl -O https://storage.yandexcloud.net/final-homework/bingo
-
+RUN chmod +x bingo
 
 FROM alpine:latest as release
-WORKDIR /app
-
-COPY --from=build /build-app . 
+ARG username=appuser
+ARG groupname=appgroup
 
 RUN mkdir /opt/bingo && \
     mkdir /opt/bongo && \
@@ -16,6 +15,20 @@ RUN mkdir /opt/bingo && \
     mkdir /opt/bongo/logs/577d315fe5 && \
     touch /opt/bongo/logs/577d315fe5/main.log
 
+COPY --from=build /usr/bin/wget .
+
+RUN addgroup -S $groupname && adduser -S $username -G $groupname
+RUN chown -R $username /opt/bingo && \
+    chown -R $username /opt/bongo/logs/577d315fe5     
+	
+USER $username
+
+WORKDIR /app
+
+COPY --from=build /build-app . 
+
 EXPOSE 12337
 
-CMD ["bingo", "run_server"]
+HEALTHCHECK --interval=10s --timeout=3s --start-period=30s CMD wget --no-verbose --tries=1 --spider http://localhost:12337/ping || exit 1
+ 
+ENTRYPOINT ["./bingo", "run_server"]

@@ -1,2 +1,5 @@
 terraform/docker_build.ps1
 terraform/.terraform/*
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup

@@ -1,8 +1,2 @@
 terraform/docker_build.ps1
-terraform/.terraform/modules/modules.json
-terraform/.terraform/providers/registry.terraform.io/hashicorp/local/2.4.0/windows_386/terraform-provider-local_v2.4.0_x5.exe
-terraform/.terraform/providers/registry.terraform.io/hashicorp/template/2.2.0/windows_386/terraform-provider-template_v2.2.0_x4.exe
-terraform/.terraform/providers/registry.terraform.io/yandex-cloud/yandex/0.102.0/windows_386/CHANGELOG.md
-terraform/.terraform/providers/registry.terraform.io/yandex-cloud/yandex/0.102.0/windows_386/LICENSE
-terraform/.terraform/providers/registry.terraform.io/yandex-cloud/yandex/0.102.0/windows_386/README.md
-terraform/.terraform/providers/registry.terraform.io/yandex-cloud/yandex/0.102.0/windows_386/terraform-provider-yandex_v0.102.0.exe
+terraform/.terraform/*

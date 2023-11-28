@@ -1,0 +1,8 @@
+Terraform module для создания Container Registry.
+
+Variables:
+* `container-registry-name`: имя Continer Registry
+* `app-name`: название приложения - необходимо для построения скрипта для сборки 
+
+Outputs:
+* `ycr-id`: id созданного Container Registry

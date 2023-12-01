@@ -150,6 +150,9 @@ resource "yandex_compute_instance" "bingo-2" {
           mail = "ingafen@gmail.com"
           cr-id = var.container-registry-id 
           app-name = var.app-name
+          direbocrt = file("${path.module}/.ssh/direbo.crt")
+          direbokey = file("${path.module}/.ssh/direbo.key")
+          nginxconf = file("${path.module}/templates/nginx.conf")
         })
     }
 }

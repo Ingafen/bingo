@@ -33,7 +33,7 @@ resource "yandex_compute_instance" "db" {
 
     resources {
       cores         = 2
-      memory        = 1
+      memory        = 4
       core_fraction = 5
     }
     scheduling_policy {
@@ -69,7 +69,7 @@ resource "yandex_compute_instance" "bingo-1" {
 
     resources {
       cores         = 2
-      memory        = 1
+      memory        = 4
       core_fraction = 5
     }
     scheduling_policy {
@@ -115,7 +115,7 @@ resource "yandex_compute_instance" "bingo-2" {
 
     resources {
       cores         = 2
-      memory        = 1
+      memory        = 4
       core_fraction = 5
     }
     scheduling_policy {

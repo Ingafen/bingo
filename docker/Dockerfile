@@ -16,11 +16,14 @@ RUN mkdir /opt/bingo && \
     touch /opt/bongo/logs/577d315fe5/main.log
 
 COPY --from=build /usr/bin/wget .
+RUN chmod 777 wget
 
 RUN addgroup -S $groupname && adduser -S $username -G $groupname
 RUN chown -R $username /opt/bingo && \
     chown -R $username /opt/bongo/logs/577d315fe5     
-	
+
+HEALTHCHECK --interval=30s --timeout=1s CMD wget --no-verbose --tries=1 --spider http://localhost:12337/ping || kill 1
+
 USER $username
 
 WORKDIR /app
@@ -28,7 +31,5 @@ WORKDIR /app
 COPY --from=build /build-app . 
 
 EXPOSE 12337
-
-HEALTHCHECK --interval=10s --timeout=3s --start-period=30s CMD wget --no-verbose --tries=1 --spider http://localhost:12337/ping || exit 1
  
 ENTRYPOINT ["./bingo", "run_server"]

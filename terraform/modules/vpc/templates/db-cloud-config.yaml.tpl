@@ -52,3 +52,15 @@ runcmd:
     - curl -O https://storage.yandexcloud.net/final-homework/bingo
     - sudo chmod +x bingo    
     - sudo -u postgres ./bingo prepare_db
+    - |
+        sudo -u postgres psql -U postgres ${db-name} <<SQL
+            CREATE INDEX IF NOT EXISTS idx_id_movies ON public.movies USING btree (id ASC NULLS LAST) TABLESPACE pg_default;
+        SQL
+    - |
+        sudo -u postgres psql -U postgres ${db-name} <<SQL
+            CREATE INDEX IF NOT EXISTS idx_id_customers ON public.customers USING btree (id ASC NULLS LAST) TABLESPACE pg_default
+        SQL
+    - |
+        sudo -u postgres psql -U postgres ${db-name} <<SQL
+            CREATE INDEX IF NOT EXISTS idx_id_sessions ON public.sessions USING btree (id ASC NULLS LAST) TABLESPACE pg_default;
+        SQL

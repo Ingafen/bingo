@@ -3,3 +3,5 @@ terraform/.terraform/*
 terraform/.terraform.lock.hcl
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
+terraform/modules/vpc/.ssh/key
+terraform/modules/vpc/.ssh/key.pub

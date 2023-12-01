@@ -4,10 +4,18 @@ variable "zone-name" {
 }
 
 variable "container-registry-name" {
-    default = "direbo-cr"
-    type = string
+  default = "direbo-cr"
+  type = string
 }
 
 variable "app-name" {
-    default = "bingo"
+  default = "bingo"
+}
+
+variable "service-account-id" {
+  type = string
+}
+
+variable "folder-id" {
+  type = string
 }

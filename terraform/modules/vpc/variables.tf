@@ -16,10 +16,6 @@ variable "region-name" {
   type = string
 }
 
-variable "service-account-name" {
-    type = string
-}
-
 variable "container-registry-name" {
     type = string
 }
@@ -31,4 +27,25 @@ variable "container-registry-id" {
 variable "app-name" {
     type = string
     description = "application image name"
+    default = "bingo"
+}
+
+variable "db_user_name" {
+  type = string
+  default = "bingo"
+}
+
+variable "db_name" {
+  type = string
+  default = "bingodb"
+}
+ 
+variable "db_user_password" {
+  type = string
+  default = "bingopass"
+}
+
+variable "mount-dir" {
+  type = string
+  default = "/opt/bingo"
 }

@@ -26,9 +26,10 @@ data "yandex_compute_image" "coi" {
   family = "container-optimized-image"
 }
 
-resource "yandex_compute_instance" "bingo-1" {
+resource "yandex_compute_instance" "db" {
     platform_id        = "standard-v2"    
     service_account_id = var.service-account-id
+    name = "db"
 
     resources {
       cores         = 2
@@ -50,18 +51,67 @@ resource "yandex_compute_instance" "bingo-1" {
       }
     }
     metadata = {
-      docker-compose = templatefile("${path.module}/docker-compose.yaml", 
+      ssh-keys  = "ubuntu:${file("${path.module}/.ssh/key.pub")}"
+      user-data = templatefile("${path.module}/templates/db-cloud-config.yaml.tpl",
         {
-            cr-id = var.container-registry-id, 
+          db-user-name = var.db_user_name
+          db-name = var.db_name
+          db-user-password = var.db_user_password
+          mail = "ingafen@gmail.com"
+        })
+    }
+}
+
+resource "yandex_compute_instance" "bingo-1" {
+    platform_id        = "standard-v2"    
+    service_account_id = var.service-account-id
+    name = "bingo-1"
+
+    resources {
+      cores         = 2
+      memory        = 1
+      core_fraction = 5
+    }
+    scheduling_policy {
+      preemptible = true
+    }
+    network_interface {
+      subnet_id = "${yandex_vpc_subnet.direbo-vpc-subnet.id}"
+      nat = true
+    }
+    boot_disk {
+      initialize_params {
+        type = "network-hdd"
+        size = "30"
+        image_id = data.yandex_compute_image.coi.id
+      }
+    }
+    metadata = {
+      docker-compose = templatefile("${path.module}/templates/docker-compose.yaml.tpl", 
+        {
+            cr-id = var.container-registry-id 
             app-name = var.app-name
+            host-dir-with-app-conf = var.mount-dir
         })
       ssh-keys  = "ubuntu:${file("${path.module}/.ssh/key.pub")}"
+      user-data = templatefile("${path.module}/templates/app-cloud-config.yaml.tpl",
+        {
+          home-dir = var.mount-dir
+          db-user-name = var.db_user_name
+          db-name = var.db_name
+          db-user-password = var.db_user_password
+          db-address = yandex_compute_instance.db.network_interface.0.ip_address
+          mail = "ingafen@gmail.com"
+          cr-id = var.container-registry-id 
+          app-name = var.app-name
+        })
     }
 }
 
 resource "yandex_compute_instance" "bingo-2" {
     platform_id        = "standard-v2"    
     service_account_id = var.service-account-id
+    name = "bingo-2"
 
     resources {
       cores         = 2
@@ -83,12 +133,24 @@ resource "yandex_compute_instance" "bingo-2" {
       }
     }
     metadata = {
-      docker-compose = templatefile("${path.module}/docker-compose.yaml", 
+      docker-compose = templatefile("${path.module}/templates/docker-compose.yaml.tpl", 
         {
-            cr-id = var.container-registry-id, 
+            cr-id = var.container-registry-id 
             app-name = var.app-name
+            host-dir-with-app-conf = var.mount-dir
         })
       ssh-keys  = "ubuntu:${file("${path.module}/.ssh/key.pub")}"
+      user-data = templatefile("${path.module}/templates/app-cloud-config.yaml.tpl",
+        {
+          home-dir = var.mount-dir
+          db-user-name = var.db_user_name
+          db-name = var.db_name
+          db-user-password = var.db_user_password
+          db-address = yandex_compute_instance.db.network_interface.0.ip_address
+          mail = "ingafen@gmail.com"
+          cr-id = var.container-registry-id 
+          app-name = var.app-name
+        })
     }
 }
 
@@ -112,7 +174,7 @@ resource "yandex_lb_network_load_balancer" "direbo-nlb" {
 
   listener {
     name = "my-listener"
-    port = 12337
+    port = 80
     external_address_spec {
       ip_version = "ipv4"
     }
@@ -124,13 +186,9 @@ resource "yandex_lb_network_load_balancer" "direbo-nlb" {
     healthcheck {
       name = "http"
       http_options {
-        port = 12337
+        port = 80
         path = "/ping"
       }
     }
   }
-}
-
-output "docker-compose" {
-  value = yandex_compute_instance.catgpt-1.metadata["docker-compose"]
 }

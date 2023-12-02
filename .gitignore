@@ -5,3 +5,5 @@ terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 terraform/modules/vpc/.ssh/key
 terraform/modules/vpc/.ssh/key.pub
+terraform/modules/vpc/.ssh/direbo.crt
+terraform/modules/vpc/.ssh/direbo.key
